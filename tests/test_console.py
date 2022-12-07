@@ -7,7 +7,7 @@ import models
 import unittest
 from models import storage
 from console import HBNBCommand
-
+from IO import StringIO
 
 class test_console(unittest.TestCase):
     ''' Test the console module'''
@@ -40,3 +40,4 @@ class test_console(unittest.TestCase):
         console = self.create()
         console.onecmd("all")
         self.assertTrue(isinstance(self.capt_out.getvalue(), str))
+
