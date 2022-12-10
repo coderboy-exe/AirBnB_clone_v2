@@ -27,7 +27,7 @@ class BaseModel:
         else:
             if kwargs.get("updated_at"):
                 kwargs['updated_at'] = datetime.strptime(kwargs['updated_at'],
-                                                         '%Y-%m-%dT%H:%M:%S.%f')
+                                                        '%Y-%m-%dT%H:%M:%S.%f')
             else:
                 self.updated_at = datetime.now()
 
