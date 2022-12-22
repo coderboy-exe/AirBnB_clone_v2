@@ -12,7 +12,7 @@ def do_deploy(archive_path):
     """
     Deploy archive to web server
     """
-    if os.path.exists(archive_path) is False:
+    if os.path.isfile(archive_path) is False:
         return False
 
     try:
@@ -29,5 +29,5 @@ def do_deploy(archive_path):
         run("rm -rf {}".format(symlink))
         run("ln -s {} {}".format(path_rmv_ext, symlink))
         return True
-    except TypeError:
+    except:
         return False
