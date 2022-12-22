@@ -1,33 +1,30 @@
-#!/usr/bin/python3
-""" Fabric script that distributes an archive to 2 web servers """
 
-from fabric.api import env, put, run
-import os.path
+#!/usr/bin/python3
+""" distributes an archive to 2 web servers """
+from fabric.api import put, run, env
+from os.path import exists
 
 
 env.hosts = ['18.234.106.217', '100.25.30.148']
 
-
-def do_deploy(archive_path):
-    """
-    Deploy archive to web server
-    """
-    if os.path.isfile(archive_path) is False:
+def do_deploy(archive_path=None):
+    """ Upload the archive to the /tmp/ directory of the web server """
+    if exists(archive_path) is False:
         return False
 
+    file_name = archive_path.split("/")[-1].split(".")[0]
     try:
-        file_name = archive_path.split("/")[-1]
-        rmv_ext = file_name.split(".")[0]
-        path_rmv_ext = "/data/web_static/releases/{}/".format(rmv_ext)
-        symlink = "/data/web_static/current"
         put(archive_path, "/tmp/")
-        run("mkdir -p {}".format(path_rmv_ext))
-        run("tar -xzf /tmp/{} -C {}".format(file_name, path_rmv_ext))
-        run("rm /tmp/{}".format(filename))
-        run("mv {}web_static/* {}".format(path_rmv_ext, path_rmv_ext))
-        run("rm -rf {}web_static".format(path_rmv_ext))
-        run("rm -rf {}".format(symlink))
-        run("ln -s {} {}".format(path_rmv_ext, symlink))
+        run('mkdir -p /data/web_static/releases/{}/'.format(file_name))
+        run('tar -xzf /tmp/{}.tgz -C /data/web_static/releases/{}/'
+            .format(file_name, file_name))
+        run('rm /tmp/{}.tgz'.format(file_name))
+        run('mv /data/web_static/releases/{}/web_static/* \
+            /data/web_static/releases/{}'.format(file_name, file_name))
+        run('rm -rf /data/web_static/releases/{}/web_static'.format(file_name))
+        run('rm -rf /data/web_static/current')
+        run('ln -s /data/web_static/releases/{}/ \
+            /data/web_static/current'.format(file_name))
         return True
     except:
         return False
