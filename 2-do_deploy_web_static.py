@@ -1,4 +1,3 @@
-
 #!/usr/bin/python3
 """ distributes an archive to 2 web servers """
 from fabric.api import put, run, env
@@ -6,6 +5,7 @@ from os.path import exists
 
 
 env.hosts = ['18.234.106.217', '100.25.30.148']
+
 
 def do_deploy(archive_path=None):
     """ Upload the archive to the /tmp/ directory of the web server """
@@ -26,5 +26,5 @@ def do_deploy(archive_path=None):
         run('ln -s /data/web_static/releases/{}/ \
             /data/web_static/current'.format(file_name))
         return True
-    except:
+    except TypeError:
         return False
