@@ -17,15 +17,18 @@ def hello_hbnb():
     """ Displays the text """
     return "Hello HBNB!"
 
+
 @app.route("/hbnb", strict_slashes=False)
 def hbnb():
     """ Dispalays text """
     return "HBNB"
 
+
 @app.route("/c/<text>", strict_slashes=False)
 def c_text(text):
     """ Displays custom input text supplied """
     return "C {}".format(text.replace('_', ' '))
+
 
 @app.route("/python", strict_slashes=False)
 @app.route("/python/<text>", strict_slashes=False)
@@ -33,10 +36,12 @@ def python(text="is cool"):
     """ Displays custom text supplied """
     return "Python {}".format(text.replace('_', ' '))
 
+
 @app.route('/number/<int:n>')
 def int_text(n):
     """ Displays text only if input is of type(int) """
     return "{:d} is a number".format(n)
+
 
 @app.route('/number_template/<int:n>')
 def int_html(n):
@@ -44,6 +49,7 @@ def int_html(n):
         of ty[e(int)
     """
     return render_template('5-number.html', n=n)
+
 
 @app.route('/number_odd_or_even/<int:n>')
 def html_odd_or_even(n):
