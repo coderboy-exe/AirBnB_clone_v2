@@ -5,10 +5,19 @@ import models
 from models.base_model import Base
 from models.city import City
 from models.state import State
+from models.place import Place
+from models.review import Review
+from models.user import User
+from models.amenity import Amenity
 from os import getenv
 import sqlalchemy
 from sqlalchemy import create_engine, MetaData
 from sqlalchemy.orm import sessionmaker, scoped_session
+
+
+
+classes = {"State": State, "City": City, "User": User,
+           "Place": Place, "Review": Review, "Amenity": Amenity}
 
 
 class DBStorage:
@@ -32,7 +41,7 @@ class DBStorage:
 
     def all(self, cls=None):
         """query on the current sessionobjects depending on class name"""
-        obj_dict = {}
+        """obj_dict = {}
 
         if cls:
             objs = self.__session.query(models.classes[cls]).all()
@@ -46,7 +55,26 @@ class DBStorage:
                     for obj in objs:
                         key = "{}.{}".format(obj.__class__.__name__, obj.id)
                         obj_dict[key] = obj
-        return obj_dict
+        return obj_dict"""
+        dbobjects = {}
+        if cls:
+            if type(cls) is str and cls in classes:
+                for obj in self.__session.query(classes[cls]).all():
+                    key = str(obj.__class__.__name__) + "." + str(obj.id)
+                    val = obj
+                    dbobjects[key] = val
+            elif cls.__name__ in classes:
+                for obj in self.__session.query(cls).all():
+                    key = str(obj.__class__.__name__) + "." + str(obj.id)
+                    val = obj
+                    dbobjects[key] = val
+        else:
+            for k, v in classes.items():
+                for obj in self.__session.query(v).all():
+                    key = str(v.__name__) + "." + str(obj.id)
+                    val = obj
+                    dbobjects[key] = val
+        return dbobjects
 
     def new(self, obj):
         """Add the obj to the current db session"""
@@ -63,7 +91,7 @@ class DBStorage:
 
     def reload(self):
         """creates all tables in the db"""
-        self.__session = Base.metadata.create_all(self.__engine)
+        Base.metadata.create_all(self.__engine)
         factory = sessionmaker(bind=self.__engine, expire_on_commit=False)
         Session = scoped_session(factory)
         self.__session = Session()
